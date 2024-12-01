@@ -4,10 +4,13 @@ import { BookOpen } from 'lucide-react';
 import { Input } from '../components/Input';
 import { TextArea } from '../components/TextArea';
 import { Button } from '../components/Button';
+import { storyService } from '../services/storyService';
 import type { StoryInput } from '../types/story';
 
 export function HomePage() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState<StoryInput>({
     language: '',
     characterName: '',
@@ -17,11 +20,17 @@ export function HomePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
     try {
-      // TODO: Implement API call
-      navigate('/story-view', { state: { story: {} } });
+      const story = await storyService.createStory(formData);
+      navigate('/story-view', { state: { story } });
     } catch (error) {
+      setError('Failed to generate story. Please try again.');
       console.error('Error generating story:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -34,6 +43,12 @@ export function HomePage() {
           <p className="mt-2 text-gray-600">Fill in the details to generate a unique kids story</p>
         </div>
 
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-lg shadow-sm">
           <Input
             label="Language"
@@ -41,6 +56,7 @@ export function HomePage() {
             value={formData.language}
             onChange={(e) => setFormData({ ...formData, language: e.target.value })}
             required
+            placeholder="e.g., English, Spanish, Portuguese"
           />
 
           <Input
@@ -49,6 +65,7 @@ export function HomePage() {
             value={formData.characterName}
             onChange={(e) => setFormData({ ...formData, characterName: e.target.value })}
             required
+            placeholder="Enter character name"
           />
 
           <TextArea
@@ -58,6 +75,7 @@ export function HomePage() {
             onChange={(e) => setFormData({ ...formData, characterDescription: e.target.value })}
             rows={3}
             required
+            placeholder="Describe your character's personality and appearance"
           />
 
           <TextArea
@@ -67,10 +85,15 @@ export function HomePage() {
             onChange={(e) => setFormData({ ...formData, storyGoal: e.target.value })}
             rows={3}
             required
+            placeholder="What should the character achieve in the story?"
           />
 
-          <Button type="submit" className="w-full">
-            Generate Story
+          <Button 
+            type="submit" 
+            className="w-full"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Generating Story...' : 'Generate Story'}
           </Button>
         </form>
       </div>

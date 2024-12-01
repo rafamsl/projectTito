@@ -13,6 +13,7 @@ export function AuthPage() {
   const from = (location.state?.from?.pathname as string) || '/pricing';
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -22,6 +23,7 @@ export function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
 
     try {
       const response = isLogin
@@ -32,6 +34,8 @@ export function AuthPage() {
       navigate(from, { replace: true });
     } catch (err) {
       setError('Authentication failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -97,8 +101,14 @@ export function AuthPage() {
               required
             />
 
-            <Button type="submit" className="w-full">
-              {isLogin ? 'Sign in' : 'Create account'}
+            <Button 
+              type="submit" 
+              className="w-full"
+              disabled={isLoading}
+            >
+              {isLoading 
+                ? (isLogin ? 'Signing in...' : 'Creating account...') 
+                : (isLogin ? 'Sign in' : 'Create account')}
             </Button>
 
             <div className="text-sm text-center">

@@ -16,7 +16,7 @@ export const authService = {
   },
 
   async register(credentials: RegisterCredentials): Promise<AuthResponse> {
-    const { data } = await api.post<AuthResponse>('/auth/register', credentials);
+    const { data } = await api.post<AuthResponse>('https://projecttitoapi.onrender.com/register', credentials);
     return data;
   },
 
