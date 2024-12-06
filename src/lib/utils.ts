@@ -5,10 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatStoryContent(content: Record<string, string>): string {
-  const numericKeys = Object.keys(content)
-    .filter(key => !isNaN(Number(key)))
-    .sort((a, b) => Number(a) - Number(b));
+export function formatStoryContent(content: StoryContent): string {
+  // Check if content has scene structure
+  if (content.scene_1) {
+    return Object.keys(content)
+      .sort() // Sort scenes to ensure correct order
+      .map(key => content[key].quote)
+      .join('\n\n');
+  }
   
-  return numericKeys.map(key => content[key]).join('\n\n');
+  // Fallback for old content structure
+  return Object.values(content).join('\n\n');
 }
