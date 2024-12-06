@@ -18,7 +18,7 @@ export function StoryViewPage() {
         <div className="bg-white rounded-lg shadow-sm p-8">
           <div className="flex items-center justify-center mb-6">
             <Book className="h-8 w-8 text-blue-600 mr-3" />
-            <h1 className="text-3xl font-bold text-gray-900">{story.content?.Title || 'Your Story'}</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{story.title || 'Your Story'}</h1>
           </div>
 
           <div className="prose max-w-none">

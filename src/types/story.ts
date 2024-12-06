@@ -6,7 +6,10 @@ export interface StoryInput {
 }
 
 export interface StoryContent {
-  [key: string]: string;
+  [key: string]: {
+    description: string;
+    quote: string;
+  };
 }
 
 export interface Story {
